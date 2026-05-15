@@ -1,0 +1,1488 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Http;
+using System.Web.Http.Cors;
+namespace OnlineLearningSystem
+{
+    public static class WebApiConfig
+    {
+        public static void Register(HttpConfiguration config)
+        {
+            // Enable CORS
+            var cors = new EnableCorsAttribute("*", "*", "*");
+            config.EnableCors(cors);
+
+            // Force JSON response
+            config.Formatters.Remove(config.Formatters.XmlFormatter);
+            // Web API configuration and services
+
+            // Web API routes
+            config.MapHttpAttributeRoutes();
+
+            config.Routes.MapHttpRoute(
+                name: "DefaultApi",
+                routeTemplate: "api/{controller}/{id}",
+                defaults: new { id = RouteParameter.Optional }
+            );
+        }
+    }
+}
+//WEBAPICONFIG
+
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  For more information on how to configure your ASP.NET application, please visit
+  http://go.microsoft.com/fwlink/?LinkId=301879
+  -->
+<configuration>
+  <connectionStrings>
+    <add name="conStr" connectionString="Data Source=IND-88\SQLEXPRESS;Initial Catalog=LearningSystem;uid=sa;pwd=sa@1234" />
+  </connectionStrings>
+  <appSettings>
+    <add key="webpages:Version" value="3.0.0.0" />
+    <add key="webpages:Enabled" value="false" />
+    <add key="ClientValidationEnabled" value="true" />
+    <add key="UnobtrusiveJavaScriptEnabled" value="true" />
+  </appSettings>
+  <system.web>
+    <compilation debug="true" targetFramework="4.5.2" />
+    <httpRuntime targetFramework="4.5.2" />
+  </system.web>
+  
+  <runtime>
+    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+      <dependentAssembly>
+        <assemblyIdentity name="Newtonsoft.Json" culture="neutral" publicKeyToken="30ad4fe6b2a6aeed" />
+        <bindingRedirect oldVersion="0.0.0.0-13.0.0.0" newVersion="13.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.Optimization" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="1.0.0.0-1.1.0.0" newVersion="1.1.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="WebGrease" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="0.0.0.0-1.5.2.14234" newVersion="1.5.2.14234" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.Helpers" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="1.0.0.0-3.0.0.0" newVersion="3.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.WebPages" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="1.0.0.0-3.0.0.0" newVersion="3.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.Mvc" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="1.0.0.0-5.3.0.0" newVersion="5.3.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Buffers" publicKeyToken="cc7b13ffcd2ddd51" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-4.0.3.0" newVersion="4.0.3.0" />
+      </dependentAssembly>
+    </assemblyBinding>
+  </runtime>
+  <system.codedom>
+    <compilers>
+      <compiler language="c#;cs;csharp" extension=".cs" type="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.CSharpCodeProvider, Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" warningLevel="4" compilerOptions="/langversion:6 /nowarn:1659;1699;1701" />
+      <compiler language="vb;vbs;visualbasic;vbscript" extension=".vb" type="Microsoft.CodeDom.Providers.DotNetCompilerPlatform.VBCodeProvider, Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" warningLevel="4" compilerOptions="/langversion:14 /nowarn:41008 /define:_MYTYPE=\&quot;Web\&quot; /optionInfer+" />
+    </compilers>
+  </system.codedom>
+<system.webServer>
+    <handlers>
+      <remove name="ExtensionlessUrlHandler-Integrated-4.0" />
+      <remove name="OPTIONSVerbHandler" />
+      <remove name="TRACEVerbHandler" />
+      <add name="ExtensionlessUrlHandler-Integrated-4.0" path="*." verb="*" type="System.Web.Handlers.TransferRequestHandler" preCondition="integratedMode,runtimeVersionv4.0" />
+    </handlers>
+  </system.webServer></configuration>
+WEBCONFIG
+//Models
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace OnlineLearningSystem.Models
+{
+    public class UserType
+    {
+        public int TypeId { get; set; }
+
+        public string TypeName { get; set; }
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace OnlineLearningSystem.Models
+{
+    public class UserDetails
+    {
+        public int UserID { get; set; }
+
+        public string UserName { get; set; }
+
+        public string UserEmail { get; set; }
+
+        public string UserPassword { get; set; }
+
+        public string UserConfirmPassword { get; set; }
+
+        public int TypeId { get; set; }
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace OnlineLearningSystem.Models
+{
+    public class InvoiceTable
+    {
+        public int InvoiceId { get; set; }
+
+        public int UserId { get; set; }
+
+        public int TotalAmount { get; set; }
+
+        public DateTime InvoiceDate { get; set; }
+
+        public string PaymentStatus { get; set; }
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace OnlineLearningSystem.Models
+{
+    public class InvoiceDetails
+    {
+        public int InvoiceDetailsId { get; set; }
+
+        public int InvoiceId { get; set; }
+
+        public int CourId { get; set; }
+
+        public int CoursePrice { get; set; }
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace OnlineLearningSystem.Models
+{
+    public class EnrollmentTable
+    {
+        public int EnrollmentId { get; set; }
+
+        public int UserId { get; set; }
+
+        public int CourId { get; set; }
+
+        public DateTime EnrollmentDate { get; set; }
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace OnlineLearningSystem.Models
+{
+    public class CourseTable
+    {
+        public int CourId { get; set; }
+
+        public string CourName { get; set; }
+
+        public int CourPrice { get; set; }
+
+        public string CourImg { get; set; }
+
+        public string CourDsc { get; set; }
+
+        public int CategoryId { get; set; }
+
+        public int InstructorId { get; set; }
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace OnlineLearningSystem.Models
+{
+    public class Category
+    {
+        public int CategoryId { get; set; }
+
+        public string CategoryName { get; set; }
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace OnlineLearningSystem.Models
+{
+    public class CartTable
+    {
+        public int CartId { get; set; }
+
+        public int UserId { get; set; }
+
+        public int CourId { get; set; }
+
+        public DateTime AddedDate { get; set; }
+    }
+}
+
+//Controllers
+
+using System;
+using System.Collections.Generic;
+using System.Web.Http;
+using System.Configuration;
+using System.Data.SqlClient;
+using OnlineLearningSystem.Models;
+
+
+namespace OnlineLearningSystem.Controllers
+{
+    [RoutePrefix("api/User")]
+    public class UserController : ApiController
+    {
+        SqlConnection sqlcon;
+        SqlCommand sqlcmd;
+        SqlDataReader dataReader;
+
+        string con = ConfigurationManager.ConnectionStrings["conStr"].ConnectionString;
+        // ================= GET ALL USERS =================
+
+        [HttpGet]
+        [Route("GetAll")]
+        public List<UserDetails> GetUsers()
+        {
+            List<UserDetails> list = new List<UserDetails>();
+
+            using (sqlcon = new SqlConnection(con))
+            {
+                string query = "SELECT * FROM UserDetails";
+
+                sqlcmd = new SqlCommand(query, sqlcon);
+
+                sqlcon.Open();
+
+                dataReader = sqlcmd.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    UserDetails user = new UserDetails();
+
+                    user.UserID = Convert.ToInt32(dataReader["UserID"]);
+                    user.UserName = dataReader["UserName"].ToString();
+                    user.UserEmail = dataReader["UserEmail"].ToString();
+                    user.UserPassword = dataReader["UserPassword"].ToString();
+                    user.UserConfirmPassword = dataReader["UserConfirmPassword"].ToString();
+                    user.TypeId = Convert.ToInt32(dataReader["TypeId"]);
+
+                    list.Add(user);
+                }
+            }
+
+            return list;
+        }
+        // ================= REGISTER USER =================
+
+        [HttpPost]
+        [Route("Register")]
+        public string Register(UserDetails user)
+        {
+            try
+            {
+                // Password Validation
+                if (user.UserPassword != user.UserConfirmPassword)
+                {
+                    return "Password and Confirm Password do not match";
+                }
+
+                using (sqlcon = new SqlConnection(con))
+                {
+                    sqlcon.Open();
+
+                    // Check Email Exists
+                    string checkQuery =
+                        "SELECT COUNT(*) FROM UserDetails WHERE UserEmail=@email";
+
+                    sqlcmd = new SqlCommand(checkQuery, sqlcon);
+
+                    sqlcmd.Parameters.AddWithValue("@email", user.UserEmail);
+
+                    int count = Convert.ToInt32(sqlcmd.ExecuteScalar());
+
+                    if (count > 0)
+                    {
+                        return "Email Already Exists";
+                    }
+
+                    // Insert User
+                    string query = @"INSERT INTO UserDetails
+                    (UserName, UserEmail, UserPassword, UserConfirmPassword, TypeId)
+                    VALUES
+                    (@name,@email,@password,@confirmpassword,@typeid)";
+
+                    sqlcmd = new SqlCommand(query, sqlcon);
+
+                    sqlcmd.Parameters.AddWithValue("@name", user.UserName);
+                    sqlcmd.Parameters.AddWithValue("@email", user.UserEmail);
+                    sqlcmd.Parameters.AddWithValue("@password", user.UserPassword);
+                    sqlcmd.Parameters.AddWithValue("@confirmpassword", user.UserConfirmPassword);
+                    sqlcmd.Parameters.AddWithValue("@typeid", user.TypeId);
+
+                    sqlcmd.ExecuteNonQuery();
+                }
+
+                return "Registration Successful";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        // ================= LOGIN =================
+
+        [HttpPost]
+        [Route("Login")]
+        public IHttpActionResult Login(UserDetails user)
+        {
+            try
+            {
+                using (sqlcon = new SqlConnection(con))
+                {
+                    string query = @"SELECT * FROM UserDetails
+                                     WHERE UserEmail=@email
+                                     AND UserPassword=@password";
+
+                    sqlcmd = new SqlCommand(query, sqlcon);
+
+                    sqlcmd.Parameters.AddWithValue("@email", user.UserEmail);
+                    sqlcmd.Parameters.AddWithValue("@password", user.UserPassword);
+
+                    sqlcon.Open();
+
+                    dataReader = sqlcmd.ExecuteReader();
+
+                    if (dataReader.Read())
+                    {
+                        return Ok(new
+                        {
+                            UserID = dataReader["UserID"],
+                            UserName = dataReader["UserName"],
+                            UserEmail = dataReader["UserEmail"],
+                            TypeId = dataReader["TypeId"]
+                        });
+                    }
+                    else
+                    {
+                        return BadRequest("Invalid Email or Password");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        // ================= UPDATE USER =================
+
+        [HttpPut]
+        [Route("Update")]
+        public string UpdateUser(UserDetails user)
+        {
+            using (sqlcon = new SqlConnection(con))
+            {
+                string query = @"UPDATE UserDetails
+                                 SET UserName=@name,
+                                 UserEmail=@email
+                                 WHERE UserID=@id";
+
+                sqlcmd = new SqlCommand(query, sqlcon);
+
+                sqlcmd.Parameters.AddWithValue("@id", user.UserID);
+                sqlcmd.Parameters.AddWithValue("@name", user.UserName);
+                sqlcmd.Parameters.AddWithValue("@email", user.UserEmail);
+
+                sqlcon.Open();
+
+                sqlcmd.ExecuteNonQuery();
+            }
+
+            return "User Updated Successfully";
+        }
+
+        // ================= DELETE USER =================
+
+        [HttpDelete]
+        [Route("Delete/{id}")]
+        public string DeleteUser(int id)
+        {
+            using (sqlcon = new SqlConnection(con))
+            {
+                string query =
+                    "DELETE FROM UserDetails WHERE UserID=@id";
+
+                sqlcmd = new SqlCommand(query, sqlcon);
+
+                sqlcmd.Parameters.AddWithValue("@id", id);
+
+                sqlcon.Open();
+
+                sqlcmd.ExecuteNonQuery();
+            }
+
+            return "User Deleted Successfully";
+        }
+
+
+    }
+}
+
+
+using System;
+using System.Collections.Generic;
+using System.Web.Http;
+using System.Configuration;
+using System.Data.SqlClient;
+using OnlineLearningSystem.Models;
+
+namespace OnlineLearningSystem.Controllers
+{
+    [RoutePrefix("api/InvoiceDetails")]
+    public class InvoiceDetailsController : ApiController
+    {
+        SqlConnection sqlcon;
+        SqlCommand sqlcmd;
+        SqlDataReader dataReader;
+
+        string con = ConfigurationManager.ConnectionStrings["conStr"].ConnectionString;
+
+        // ================= GET ALL INVOICE DETAILS =================
+        [HttpGet]
+        [Route("GetAll")]
+        public IHttpActionResult GetInvoiceDetails()
+        {
+            List<InvoiceDetails> list = new List<InvoiceDetails>();
+
+            using (sqlcon = new SqlConnection(con))
+            {
+                string query = "SELECT * FROM InvoiceDetails";
+
+                sqlcmd = new SqlCommand(query, sqlcon);
+
+                sqlcon.Open();
+                dataReader = sqlcmd.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    list.Add(new InvoiceDetails
+                    {
+                        InvoiceDetailsId = Convert.ToInt32(dataReader["InvoiceDetailsId"]),
+                        InvoiceId = Convert.ToInt32(dataReader["InvoiceId"]),
+                        CourId = Convert.ToInt32(dataReader["CourId"]),
+                        CoursePrice = Convert.ToInt32(dataReader["CoursePrice"])
+                    });
+                }
+            }
+
+            return Ok(list);
+        }
+
+        // ================= GET BY INVOICE ID =================
+        [HttpGet]
+        [Route("GetByInvoice/{invoiceid}")]
+        public IHttpActionResult GetByInvoice(int invoiceid)
+        {
+            List<InvoiceDetails> list = new List<InvoiceDetails>();
+
+            using (sqlcon = new SqlConnection(con))
+            {
+                string query = @"
+                SELECT * FROM InvoiceDetails
+                WHERE InvoiceId=@invoiceid";
+
+                sqlcmd = new SqlCommand(query, sqlcon);
+                sqlcmd.Parameters.AddWithValue("@invoiceid", invoiceid);
+
+                sqlcon.Open();
+                dataReader = sqlcmd.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    list.Add(new InvoiceDetails
+                    {
+                        InvoiceDetailsId = Convert.ToInt32(dataReader["InvoiceDetailsId"]),
+                        InvoiceId = Convert.ToInt32(dataReader["InvoiceId"]),
+                        CourId = Convert.ToInt32(dataReader["CourId"]),
+                        CoursePrice = Convert.ToInt32(dataReader["CoursePrice"])
+                    });
+                }
+            }
+
+            return Ok(list);
+        }
+
+        // ================= ADD INVOICE DETAILS =================
+        [HttpPost]
+        [Route("Add")]
+        public IHttpActionResult AddInvoiceDetails(List<InvoiceDetails> details)
+        {
+            try
+            {
+                using (sqlcon = new SqlConnection(con))
+                {
+                    sqlcon.Open();
+
+                    foreach (var item in details)
+                    {
+                        string query = @"
+                        INSERT INTO InvoiceDetails
+                        (InvoiceId, CourId, CoursePrice)
+                        VALUES
+                        (@invoiceid, @courseid, @price)";
+
+                        sqlcmd = new SqlCommand(query, sqlcon);
+
+                        sqlcmd.Parameters.AddWithValue("@invoiceid", item.InvoiceId);
+                        sqlcmd.Parameters.AddWithValue("@courseid", item.CourId);
+                        sqlcmd.Parameters.AddWithValue("@price", item.CoursePrice);
+
+                        sqlcmd.ExecuteNonQuery();
+                    }
+                }
+
+                return Ok(new
+                {
+                    Message = "Invoice Details Added Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+
+
+        // ================= DELETE INVOICE DETAIL =================
+        [HttpDelete]
+        [Route("Delete/{id}")]
+        public IHttpActionResult DeleteInvoiceDetails(int id)
+        {
+            try
+            {
+                using (sqlcon = new SqlConnection(con))
+                {
+                    string query =
+                        "DELETE FROM InvoiceDetails WHERE InvoiceDetailsId=@id";
+
+                    sqlcmd = new SqlCommand(query, sqlcon);
+                    sqlcmd.Parameters.AddWithValue("@id", id);
+
+                    sqlcon.Open();
+                    sqlcmd.ExecuteNonQuery();
+                }
+
+                return Ok(new
+                {
+                    Message = "Invoice Detail Deleted Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Web.Http;
+using System.Configuration;
+using System.Data.SqlClient;
+using OnlineLearningSystem.Models;
+
+namespace OnlineLearningSystem.Controllers
+{
+    [RoutePrefix("api/Invoice")]
+    public class InvoiceController : ApiController
+    {
+        SqlConnection sqlcon;
+        SqlCommand sqlcmd;
+        SqlDataReader dataReader;
+
+        string con = ConfigurationManager.ConnectionStrings["conStr"].ConnectionString;
+
+        // ================= GET ALL INVOICES =================
+        [HttpGet]
+        [Route("GetAll")]
+        public IHttpActionResult GetInvoices()
+        {
+            List<InvoiceTable> list = new List<InvoiceTable>();
+
+            using (sqlcon = new SqlConnection(con))
+            {
+                string query = "SELECT * FROM InvoiceTable";
+
+                sqlcmd = new SqlCommand(query, sqlcon);
+
+                sqlcon.Open();
+                dataReader = sqlcmd.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    list.Add(new InvoiceTable
+                    {
+                        InvoiceId = Convert.ToInt32(dataReader["InvoiceId"]),
+                        UserId = Convert.ToInt32(dataReader["UserId"]),
+                        TotalAmount = Convert.ToInt32(dataReader["TotalAmount"]),
+                        InvoiceDate = Convert.ToDateTime(dataReader["InvoiceDate"]),
+                        PaymentStatus = dataReader["PaymentStatus"].ToString()
+                    });
+                }
+            }
+
+            return Ok(list);
+        }
+
+        // ================= GET INVOICE BY ID =================
+        [HttpGet]
+        [Route("GetById/{id}")]
+        public IHttpActionResult GetInvoiceById(int id)
+        {
+            InvoiceTable invoice = new InvoiceTable();
+
+            using (sqlcon = new SqlConnection(con))
+            {
+                string query = "SELECT * FROM InvoiceTable WHERE InvoiceId=@id";
+
+                sqlcmd = new SqlCommand(query, sqlcon);
+                sqlcmd.Parameters.AddWithValue("@id", id);
+
+                sqlcon.Open();
+                dataReader = sqlcmd.ExecuteReader();
+
+                if (dataReader.Read())
+                {
+                    invoice.InvoiceId = Convert.ToInt32(dataReader["InvoiceId"]);
+                    invoice.UserId = Convert.ToInt32(dataReader["UserId"]);
+                    invoice.TotalAmount = Convert.ToInt32(dataReader["TotalAmount"]);
+                    invoice.InvoiceDate = Convert.ToDateTime(dataReader["InvoiceDate"]);
+                    invoice.PaymentStatus = dataReader["PaymentStatus"].ToString();
+                }
+            }
+
+            return Ok(invoice);
+        }
+
+        // ================= CREATE INVOICE =================
+        [HttpPost]
+        [Route("Create")]
+        public IHttpActionResult CreateInvoice(InvoiceTable invoice)
+        {
+            try
+            {
+                int invoiceId = 0;
+
+                using (sqlcon = new SqlConnection(con))
+                {
+                    sqlcon.Open();
+
+                    string query = @"
+                    INSERT INTO InvoiceTable(UserId,TotalAmount,PaymentStatus,InvoiceDate)
+                    VALUES(@uid,@amount,@status,GETDATE());
+
+                    SELECT SCOPE_IDENTITY();";
+
+                    sqlcmd = new SqlCommand(query, sqlcon);
+
+                    sqlcmd.Parameters.AddWithValue("@uid", invoice.UserId);
+                    sqlcmd.Parameters.AddWithValue("@amount", invoice.TotalAmount);
+                    sqlcmd.Parameters.AddWithValue("@status", invoice.PaymentStatus);
+
+                    invoiceId = Convert.ToInt32(sqlcmd.ExecuteScalar());
+                }
+
+                return Ok(new
+                {
+                    Message = "Invoice Created Successfully",
+                    InvoiceId = invoiceId
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // ================= DELETE INVOICE =================
+        [HttpDelete]
+        [Route("Delete/{id}")]
+        public IHttpActionResult DeleteInvoice(int id)
+        {
+            try
+            {
+                using (sqlcon = new SqlConnection(con))
+                {
+                    string query = "DELETE FROM InvoiceTable WHERE InvoiceId=@id";
+
+                    sqlcmd = new SqlCommand(query, sqlcon);
+                    sqlcmd.Parameters.AddWithValue("@id", id);
+
+                    sqlcon.Open();
+                    sqlcmd.ExecuteNonQuery();
+                }
+
+                return Ok("Invoice Deleted Successfully");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+    }
+}
+
+using System;
+using System.Configuration;
+using System.Data.SqlClient;
+using System.Web.Http;
+using OnlineLearningSystem.Models;
+
+namespace OnlineLearningSystem.Controllers
+{
+    [RoutePrefix("api/Enrollment")]
+    public class EnrollmentController : ApiController
+    {
+        SqlConnection sqlcon;
+        SqlCommand sqlcmd;
+
+        string con = ConfigurationManager.ConnectionStrings["conStr"].ConnectionString;
+
+
+        [HttpGet]
+        [Route("GetByUser/{userid}")]
+        public IHttpActionResult GetByUser(int userid)
+        {
+            try
+            {
+                using (sqlcon = new SqlConnection(con))
+                {
+                    sqlcon.Open();
+
+                    string query = @"
+            SELECT 
+                c.CourId,
+                c.CourName,
+                c.CourPrice,
+                c.CourImg,
+                c.CourDsc,
+                c.CategoryId,
+                c.InstructorId
+            FROM EnrollmentTable e
+            INNER JOIN CourseTable c ON e.CourId = c.CourId
+            WHERE e.UserId = @uid";
+
+                    sqlcmd = new SqlCommand(query, sqlcon);
+                    sqlcmd.Parameters.AddWithValue("@uid", userid);
+
+                    SqlDataReader reader = sqlcmd.ExecuteReader();
+
+                    var list = new System.Collections.Generic.List<CourseTable>();
+
+                    while (reader.Read())
+                    {
+                        list.Add(new CourseTable
+                        {
+                            CourId = Convert.ToInt32(reader["CourId"]),
+                            CourName = reader["CourName"].ToString(),
+                            CourPrice = Convert.ToInt32(reader["CourPrice"]),
+                            CourImg = reader["CourImg"].ToString(),
+                            CourDsc = reader["CourDsc"].ToString(),
+                            CategoryId = Convert.ToInt32(reader["CategoryId"]),
+                            InstructorId = Convert.ToInt32(reader["InstructorId"])
+                        });
+                    }
+
+                    return Ok(list);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // ================= ENROLL COURSE =================
+        [HttpPost]
+        [Route("Add")]
+        public string AddEnrollment(EnrollmentTable e)
+        {
+            try
+            {
+                using (sqlcon = new SqlConnection(con))
+                {
+                    sqlcon.Open();
+
+                    //  Check already enrolled
+                    string checkQuery = @"
+                    SELECT COUNT(*) 
+                    FROM EnrollmentTable
+                    WHERE UserId = @uid AND CourId = @cid";
+
+                    sqlcmd = new SqlCommand(checkQuery, sqlcon);
+                    sqlcmd.Parameters.AddWithValue("@uid", e.UserId);
+                    sqlcmd.Parameters.AddWithValue("@cid", e.CourId);
+
+                    int count = Convert.ToInt32(sqlcmd.ExecuteScalar());
+
+                    if (count > 0)
+                    {
+                        return "Already Enrolled";
+                    }
+
+                    //  Insert enrollment
+                    string query = @"
+                    INSERT INTO EnrollmentTable (UserId, CourId)
+                    VALUES (@uid, @cid)";
+
+                    sqlcmd = new SqlCommand(query, sqlcon);
+
+                    sqlcmd.Parameters.AddWithValue("@uid", e.UserId);
+                    sqlcmd.Parameters.AddWithValue("@cid", e.CourId);
+
+                    sqlcmd.ExecuteNonQuery();
+                }
+
+                return "Enrollment Successful";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Web.Http;
+using System.Configuration;
+using System.Data.SqlClient;
+using OnlineLearningSystem.Models;
+
+namespace OnlineLearningSystem.Controllers
+{
+    [RoutePrefix("api/Course")]
+    public class CourseController : ApiController
+    {
+        SqlConnection sqlcon;
+        SqlCommand sqlcmd;
+        SqlDataReader dataReader;
+
+        string con = ConfigurationManager
+                     .ConnectionStrings["conStr"]
+                     .ConnectionString;
+
+        // ================= GET ALL COURSES =================
+
+        [HttpGet]
+        [Route("GetAll")]
+        public List<CourseTable> GetCourses()
+        {
+            List<CourseTable> list = new List<CourseTable>();
+
+            using (sqlcon = new SqlConnection(con))
+            {
+                string query = "SELECT * FROM CourseTable";
+
+                sqlcmd = new SqlCommand(query, sqlcon);
+
+                sqlcon.Open();
+
+                dataReader = sqlcmd.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    CourseTable c = new CourseTable();
+
+                    c.CourId = Convert.ToInt32(dataReader["CourId"]);
+                    c.CourName = dataReader["CourName"].ToString();
+                    c.CourPrice = Convert.ToInt32(dataReader["CourPrice"]);
+                    c.CourImg = dataReader["CourImg"].ToString();
+                    c.CourDsc = dataReader["CourDsc"].ToString();
+                    c.CategoryId = Convert.ToInt32(dataReader["CategoryId"]);
+                    c.InstructorId = Convert.ToInt32(dataReader["InstructorId"]);
+
+                    list.Add(c);
+                }
+            }
+
+            return list;
+        }
+
+  //get category by category name for filtering
+        [HttpGet]
+        [Route("GetByCategory/{categoryName}")]
+        public List<CourseTable> GetByCategory(string categoryName)
+        {
+            List<CourseTable> list = new List<CourseTable>();
+
+            using (sqlcon = new SqlConnection(con))
+            {
+                string query = @"
+            SELECT c.*
+            FROM CourseTable c
+            INNER JOIN Category cat
+                ON c.CategoryId = cat.CategoryId
+            WHERE cat.CategoryName = @categoryName";
+
+                sqlcmd = new SqlCommand(query, sqlcon);
+                sqlcmd.Parameters.AddWithValue("@categoryName", categoryName);
+
+                sqlcon.Open();
+                dataReader = sqlcmd.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    CourseTable c = new CourseTable
+                    {
+                        CourId = Convert.ToInt32(dataReader["CourId"]),
+                        CourName = dataReader["CourName"].ToString(),
+                        CourPrice = Convert.ToInt32(dataReader["CourPrice"]),
+                        CourImg = dataReader["CourImg"].ToString(),
+                        CourDsc = dataReader["CourDsc"].ToString(),
+                        CategoryId = Convert.ToInt32(dataReader["CategoryId"]),
+                        InstructorId = Convert.ToInt32(dataReader["InstructorId"])
+                    };
+
+                    list.Add(c);
+                }
+            }
+
+            return list;
+        }
+
+        // ================= GET COURSE BY ID =================
+
+        [HttpGet]
+        [Route("GetById/{id}")]
+        public CourseTable GetCourseById(int id)
+        {
+            CourseTable c = new CourseTable();
+
+            using (sqlcon = new SqlConnection(con))
+            {
+                string query =
+                    "SELECT * FROM CourseTable WHERE CourId=@id";
+
+                sqlcmd = new SqlCommand(query, sqlcon);
+
+                sqlcmd.Parameters.AddWithValue("@id", id);
+
+                sqlcon.Open();
+
+                dataReader = sqlcmd.ExecuteReader();
+
+                if (dataReader.Read())
+                {
+                    c.CourId = Convert.ToInt32(dataReader["CourId"]);
+                    c.CourName = dataReader["CourName"].ToString();
+                    c.CourPrice = Convert.ToInt32(dataReader["CourPrice"]);
+                    c.CourImg = dataReader["CourImg"].ToString();
+                    c.CourDsc = dataReader["CourDsc"].ToString();
+                    c.CategoryId = Convert.ToInt32(dataReader["CategoryId"]);
+                    c.InstructorId = Convert.ToInt32(dataReader["InstructorId"]);
+                }
+            }
+
+            return c;
+        }
+
+        // ================= ADD COURSE =================
+
+        [HttpPost]
+        [Route("Add")]
+        public string AddCourse(CourseTable c)
+        {
+            try
+            {
+                using (sqlcon = new SqlConnection(con))
+                {
+                    string query = @"INSERT INTO CourseTable
+                    (CourName,CourPrice,CourImg,CourDsc,CategoryId,InstructorId)
+                    VALUES
+                    (@name,@price,@img,@dsc,@catid,@instid)";
+
+                    sqlcmd = new SqlCommand(query, sqlcon);
+
+                    sqlcmd.Parameters.AddWithValue("@name", c.CourName);
+                    sqlcmd.Parameters.AddWithValue("@price", c.CourPrice);
+                    sqlcmd.Parameters.AddWithValue("@img", c.CourImg);
+                    sqlcmd.Parameters.AddWithValue("@dsc", c.CourDsc);
+                    sqlcmd.Parameters.AddWithValue("@catid", c.CategoryId);
+                    sqlcmd.Parameters.AddWithValue("@instid", c.InstructorId);
+
+                    sqlcon.Open();
+
+                    sqlcmd.ExecuteNonQuery();
+                }
+
+                return "Course Added Successfully";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        // ================= UPDATE COURSE =================
+
+        [HttpPut]
+        [Route("Update")]
+        public string UpdateCourse(CourseTable c)
+        {
+            try
+            {
+                using (sqlcon = new SqlConnection(con))
+                {
+                    string query = @"UPDATE CourseTable
+                                     SET CourName=@name,
+                                     CourPrice=@price,
+                                     CourImg=@img,
+                                     CourDsc=@dsc,
+                                     CategoryId=@catid
+                                     WHERE CourId=@id";
+
+                    sqlcmd = new SqlCommand(query, sqlcon);
+
+                    sqlcmd.Parameters.AddWithValue("@id", c.CourId);
+                    sqlcmd.Parameters.AddWithValue("@name", c.CourName);
+                    sqlcmd.Parameters.AddWithValue("@price", c.CourPrice);
+                    sqlcmd.Parameters.AddWithValue("@img", c.CourImg);
+                    sqlcmd.Parameters.AddWithValue("@dsc", c.CourDsc);
+                    sqlcmd.Parameters.AddWithValue("@catid", c.CategoryId);
+
+                    sqlcon.Open();
+
+                    sqlcmd.ExecuteNonQuery();
+                }
+
+                return "Course Updated Successfully";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        // ================= DELETE COURSE =================
+
+        [HttpDelete]
+        [Route("Delete/{id}")]
+        public string DeleteCourse(int id)
+        {
+            try
+            {
+                using (sqlcon = new SqlConnection(con))
+                {
+                    string query =
+                        "DELETE FROM CourseTable WHERE CourId=@id";
+
+                    sqlcmd = new SqlCommand(query, sqlcon);
+
+                    sqlcmd.Parameters.AddWithValue("@id", id);
+
+                    sqlcon.Open();
+
+                    sqlcmd.ExecuteNonQuery();
+                }
+
+                return "Course Deleted Successfully";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+    }
+}
+
+using System;
+using System.Collections.Generic;
+using System.Web.Http;
+using System.Configuration;
+using System.Data.SqlClient;
+using OnlineLearningSystem.Models;
+
+
+namespace OnlineLearningSystem.Controllers
+{
+    
+    public class CategoryController : ApiController
+    {
+        string con = ConfigurationManager
+                     .ConnectionStrings["conStr"]
+                     .ConnectionString;
+
+        // ================= GET ALL CATEGORY =================
+
+        [HttpGet]
+        public List<Category> GetCategory()
+        {
+            List<Category> list = new List<Category>();
+
+            using (SqlConnection sqlcon = new SqlConnection(con))
+            {
+                string query = @"SELECT * FROM Category";
+
+                SqlCommand sqlcmd =
+                    new SqlCommand(query, sqlcon);
+
+                sqlcon.Open();
+
+                SqlDataReader dataReader =
+                    sqlcmd.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    Category cat = new Category();
+
+                    cat.CategoryId =
+                        Convert.ToInt32(dataReader["CategoryId"]);
+
+                    cat.CategoryName =
+                        dataReader["CategoryName"].ToString();
+
+                    list.Add(cat);
+                }
+
+                dataReader.Close();
+
+                sqlcon.Close();
+            }
+
+            return list;
+        }
+    }
+}
+
+
+using System;
+using System.Collections.Generic;
+using System.Web.Http;
+using System.Configuration;
+using System.Data.SqlClient;
+using OnlineLearningSystem.Models;
+
+namespace OnlineLearningSystem.Controllers
+{
+    [RoutePrefix("api/Cart")]
+    public class CartController : ApiController
+    {
+        SqlConnection sqlcon;
+        SqlCommand sqlcmd;
+        SqlDataReader dataReader;
+
+        string con = ConfigurationManager
+                     .ConnectionStrings["conStr"]
+                     .ConnectionString;
+
+        // ================= GET USER CART =================
+
+        [HttpGet]
+        [Route("GetCart/{userid}")]
+        public List<CourseTable> GetCart(int userid)
+        {
+            List<CourseTable> list = new List<CourseTable>();
+
+            using (sqlcon = new SqlConnection(con))
+            {
+                string query = @"
+                SELECT 
+                    c.CourId,
+                    c.CourName,
+                    c.CourPrice,
+                    c.CourImg,
+                    c.CourDsc,
+                    c.CategoryId,
+                    c.InstructorId
+                FROM CartTable ct
+                INNER JOIN CourseTable c
+                ON ct.CourId = c.CourId
+                WHERE ct.UserId=@uid";
+
+                sqlcmd = new SqlCommand(query, sqlcon);
+
+                sqlcmd.Parameters.AddWithValue("@uid", userid);
+
+                sqlcon.Open();
+
+                dataReader = sqlcmd.ExecuteReader();
+
+                while (dataReader.Read())
+                {
+                    CourseTable c = new CourseTable();
+
+                    c.CourId = Convert.ToInt32(dataReader["CourId"]);
+                    c.CourName = dataReader["CourName"].ToString();
+                    c.CourPrice = Convert.ToInt32(dataReader["CourPrice"]);
+                    c.CourImg = dataReader["CourImg"].ToString();
+                    c.CourDsc = dataReader["CourDsc"].ToString();
+                    c.CategoryId = Convert.ToInt32(dataReader["CategoryId"]);
+                    c.InstructorId = Convert.ToInt32(dataReader["InstructorId"]);
+
+                    list.Add(c);
+                }
+            }
+
+            return list;
+        }
+
+        // ================= ADD TO CART =================
+
+        [HttpPost]
+        [Route("Add")]
+        public string AddToCart(CartTable cart)
+        {
+            try
+            {
+                using (sqlcon = new SqlConnection(con))
+                {
+                    sqlcon.Open();
+
+                    // Check Course Already Exists
+                    string checkQuery = @"
+                    SELECT COUNT(*) FROM CartTable
+                    WHERE UserId=@uid AND CourId=@cid";
+
+                    sqlcmd = new SqlCommand(checkQuery, sqlcon);
+
+                    sqlcmd.Parameters.AddWithValue("@uid", cart.UserId);
+                    sqlcmd.Parameters.AddWithValue("@cid", cart.CourId);
+
+                    int count = Convert.ToInt32(sqlcmd.ExecuteScalar());
+
+                    if (count > 0)
+                    {
+                        return "Course Already Added To Cart";
+                    }
+
+                    // Add To Cart
+                    string query = @"
+                    INSERT INTO CartTable(UserId,CourId)
+                    VALUES(@uid,@cid)";
+
+                    sqlcmd = new SqlCommand(query, sqlcon);
+
+                    sqlcmd.Parameters.AddWithValue("@uid", cart.UserId);
+                    sqlcmd.Parameters.AddWithValue("@cid", cart.CourId);
+
+                    sqlcmd.ExecuteNonQuery();
+                }
+
+                return "Course Added To Cart";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+
+
+        // ================= REMOVE FROM CART =================
+
+        [HttpDelete]
+        [Route("Delete/{userid}/{courseid}")]
+        public string DeleteCartItem(int userid, int courseid)
+        {
+            try
+            {
+                using (sqlcon = new SqlConnection(con))
+                {
+                    string query = @"
+                    DELETE FROM CartTable
+                    WHERE UserId=@uid
+                    AND CourId=@cid";
+
+                    sqlcmd = new SqlCommand(query, sqlcon);
+
+                    sqlcmd.Parameters.AddWithValue("@uid", userid);
+                    sqlcmd.Parameters.AddWithValue("@cid", courseid);
+
+                    sqlcon.Open();
+
+                    sqlcmd.ExecuteNonQuery();
+                }
+
+                return "Course Removed From Cart";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        [HttpPost]
+        [Route("BuyNow/{userId}")]
+        public IHttpActionResult BuyNow(int userId)
+        {
+            try
+            {
+                using (SqlConnection sqlcon = new SqlConnection(con))
+                {
+                    sqlcon.Open();
+
+                    // ================= 1. GET CART ITEMS =================
+                    string cartQuery = @"
+                SELECT 
+                    ct.CourId,
+                    c.CourPrice
+                FROM CartTable ct
+                INNER JOIN CourseTable c 
+                    ON ct.CourId = c.CourId
+                WHERE ct.UserId = @uid";
+
+                    SqlCommand cmd = new SqlCommand(cartQuery, sqlcon);
+                    cmd.Parameters.AddWithValue("@uid", userId);
+
+                    SqlDataReader dr = cmd.ExecuteReader();
+
+                    List<int> courseIds = new List<int>();
+                    List<int> prices = new List<int>();
+
+                    while (dr.Read())
+                    {
+                        courseIds.Add(Convert.ToInt32(dr["CourId"]));
+                        prices.Add(Convert.ToInt32(dr["CourPrice"]));
+                    }
+
+                    dr.Close();
+
+                    if (courseIds.Count == 0)
+                    {
+                        return BadRequest("Cart is empty");
+                    }
+
+                    // ================= 2. CALCULATE TOTAL =================
+                    int total = 0;
+
+                    for (int i = 0; i < prices.Count; i++)
+                    {
+                        total += prices[i];
+                    }
+
+                    // ================= 3. CREATE INVOICE =================
+                    string invoiceQuery = @"
+                INSERT INTO InvoiceTable (UserId, TotalAmount)
+                VALUES (@uid, @total);
+                SELECT SCOPE_IDENTITY();";
+
+                    SqlCommand cmd2 = new SqlCommand(invoiceQuery, sqlcon);
+                    cmd2.Parameters.AddWithValue("@uid", userId);
+                    cmd2.Parameters.AddWithValue("@total", total);
+
+                    int invoiceId = Convert.ToInt32(cmd2.ExecuteScalar());
+
+                    // ================= 4. INSERT INVOICE DETAILS =================
+                    for (int i = 0; i < courseIds.Count; i++)
+                    {
+                        string detailQuery = @"
+                    INSERT INTO InvoiceDetails
+                    (InvoiceId, CourId, CoursePrice)
+                    VALUES (@iid, @cid, @price)";
+
+                        SqlCommand cmd3 = new SqlCommand(detailQuery, sqlcon);
+
+                        cmd3.Parameters.AddWithValue("@iid", invoiceId);
+                        cmd3.Parameters.AddWithValue("@cid", courseIds[i]);
+                        cmd3.Parameters.AddWithValue("@price", prices[i]);
+
+                        cmd3.ExecuteNonQuery();
+                    }
+
+                    // ================= 5. CLEAR CART =================
+                    string clearQuery = @"
+                DELETE FROM CartTable 
+                WHERE UserId = @uid";
+
+                    SqlCommand cmd4 = new SqlCommand(clearQuery, sqlcon);
+                    cmd4.Parameters.AddWithValue("@uid", userId);
+
+                    cmd4.ExecuteNonQuery();
+
+                    // ================= RESPONSE =================
+                    return Ok(new
+                    {
+                        Message = "Purchase Successful",
+                        InvoiceId = invoiceId
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        // ================= CLEAR CART =================
+
+        [HttpDelete]
+        [Route("Clear/{userid}")]
+        public string ClearCart(int userid)
+        {
+            try
+            {
+                using (sqlcon = new SqlConnection(con))
+                {
+                    string query =
+                        "DELETE FROM CartTable WHERE UserId=@uid";
+
+                    sqlcmd = new SqlCommand(query, sqlcon);
+
+                    sqlcmd.Parameters.AddWithValue("@uid", userid);
+
+                    sqlcon.Open();
+
+                    sqlcmd.ExecuteNonQuery();
+                }
+
+                return "Cart Cleared Successfully";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+    }
+}
